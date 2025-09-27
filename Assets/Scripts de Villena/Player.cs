@@ -1,28 +1,37 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
-    public int lifeplayer;
+    public int lifeplayer = 3;
     public string scenefallide;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public TextMeshProUGUI lifeText;
+
     void Start()
     {
-        
+        ScoreManager.life = lifeplayer; 
+        UpdateLifeText();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnCollisionEnter(Collision collision)
     {
-        
-    }
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("enemigo")) {
+        if (collision.gameObject.CompareTag("enemigo"))
+        {
             lifeplayer--;
-            if (lifeplayer == 0) {
+            ScoreManager.life = lifeplayer; 
+            UpdateLifeText();
+
+            if (lifeplayer <= 0)
+            {
+                ScoreManager.points = FindFirstObjectByType<tiempo>().points;
                 SceneManager.LoadScene(scenefallide);
             }
         }
+    }
+
+    void UpdateLifeText()
+    {
+        lifeText.text = "Vida: " + lifeplayer;
     }
 }

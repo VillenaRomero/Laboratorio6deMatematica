@@ -2,24 +2,18 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public int velocity;
-    public int speedz;
+    public float speedZ = 5f;
     private Rigidbody rb;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+    void Start(){
         rb = GetComponent<Rigidbody>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        velocity =speedz * velocity;
+    void FixedUpdate() {
+        rb.linearVelocity = new Vector3(0, 0, -speedZ);
     }
-    public void OnTriggerEnter(Collider other)
+    public void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag("vacio") || other.CompareTag("playernave")) {
+        if (collision.gameObject.tag=="vacio" || collision.gameObject.tag=="playernave"){
             Destroy(gameObject);
         }
     }
