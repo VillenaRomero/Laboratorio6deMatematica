@@ -85,28 +85,20 @@ namespace Mathematics.Week6
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         private float _verticalDirection = 0f;
         private float _horizontalDirection = 0f;
         [SerializeField] private float velocitySpeed = 5f;
 
         private Rigidbody _myRB;
 
+
+        private Vector3 _startPosition;
+
+
         private void Start()
         {
             _myRB = GetComponent<Rigidbody>();
+            _startPosition = _myRB.position;
         }
 
         public void TranslateVertical(InputAction.CallbackContext context)
@@ -121,8 +113,21 @@ namespace Mathematics.Week6
 
         private void UpdatePosition()
         {
-            _myRB.linearVelocity = new Vector3(-_horizontalDirection * velocitySpeed, -_verticalDirection * velocitySpeed, 0f);
+            _myRB.linearVelocity = new Vector3(-_horizontalDirection * velocitySpeed, -_verticalDirection * velocitySpeed, 0f); 
+            if (_horizontalDirection == 0 && _verticalDirection == 0)
+            {
+                _myRB.position = Vector3.Lerp(_myRB.position, _startPosition, Time.fixedDeltaTime * 2f);
+                _myRB.linearVelocity = Vector3.zero; // evita que siga con velocidad previa
+            }
+            
+            float limitX = 0f;
+            float limitY = 0f;
+            Vector3 clampedPos = _myRB.position;
+            clampedPos.x = Mathf.Clamp(clampedPos.x, -limitX, limitX);
+            clampedPos.y = Mathf.Clamp(clampedPos.y, -limitY, limitY);
+            _myRB.position = clampedPos;
         }
+        
     }
 
     [System.Serializable]
